@@ -1,9 +1,7 @@
 package forum.hub.api.domain.course;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public enum CourseCategory {
 
@@ -29,6 +27,10 @@ public enum CourseCategory {
     RUST("Rust"),
     LUA("Lua");
 
-    private final String name;
+    private final String value;
+
+    CourseCategory(String value) {
+        this.value = value;
+    }
 
 }
