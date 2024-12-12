@@ -20,8 +20,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 }
