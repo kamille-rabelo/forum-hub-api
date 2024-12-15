@@ -1,19 +1,12 @@
 package forum.hub.api.domain.course;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "courses")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode(of = "id")
 public class Course {
 
     @Id
@@ -23,4 +16,35 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private List<CourseCategory> category;
 
+    public Course() {
+    }
+
+    public Course(Long id, String name, List<CourseCategory> category) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<CourseCategory> getCategory() {
+        return category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Course course)) return false;
+        return Objects.equals(id, course.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

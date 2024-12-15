@@ -3,19 +3,12 @@ package forum.hub.api.domain.answer;
 import forum.hub.api.domain.topic.Topic;
 import forum.hub.api.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "answers")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode(of = "id")
 public class Answer {
 
     @Id
@@ -31,4 +24,50 @@ public class Answer {
     private LocalDateTime creationDate;
     private Boolean solution;
 
+    public Answer() {
+    }
+
+    public Answer(Long id, String message, User author, Topic topic, LocalDateTime creationDate, Boolean solution) {
+        this.id = id;
+        this.message = message;
+        this.author = author;
+        this.topic = topic;
+        this.creationDate = creationDate;
+        this.solution = solution;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public Boolean getSolution() {
+        return solution;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Answer answer)) return false;
+        return Objects.equals(id, answer.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

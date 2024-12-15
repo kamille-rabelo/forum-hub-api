@@ -1,8 +1,5 @@
 package forum.hub.api.domain.course;
 
-import lombok.Getter;
-
-@Getter
 public enum CourseCategory {
 
     PROGRAMMING("Programming"),
@@ -33,4 +30,7 @@ public enum CourseCategory {
         this.value = value;
     }
 
+    public String getValue() {
+        return value;
+    }
 }
