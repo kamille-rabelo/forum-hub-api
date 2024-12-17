@@ -6,11 +6,10 @@ import forum.hub.api.domain.course.CourseService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/courses")
@@ -25,5 +24,13 @@ public class CourseController {
         var course = service.create(data);
 
         return ResponseEntity.created(null).body(new CourseDetailDTO(course));
+    }
+
+    @GetMapping
+    public ResponseEntity list(@PageableDefault(sort = "name") Pageable pageable) {
+        var courses = service.getCourses(pageable)
+                .map(CourseDetailDTO::new);
+
+        return ResponseEntity.ok(courses);
     }
 }
