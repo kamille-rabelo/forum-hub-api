@@ -4,7 +4,11 @@ import forum.hub.api.domain.course.CourseRepository;
 import forum.hub.api.domain.exception.ValidationException;
 import forum.hub.api.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.Year;
 
 @Service
 public class TopicService {
@@ -34,5 +38,21 @@ public class TopicService {
         topicRepository.save(topic);
 
        return topic;
+    }
+
+    public Page<Topic> getTopics(String course, Year year, Pageable pageable) {
+        if (course != null && year != null) {
+            return topicRepository.listByCourseNameAndYear("%" + course + "%", year.getValue(), pageable);
+        }
+
+        if (course != null) {
+            return topicRepository.listByCourseName("%" + course + "%", pageable);
+        }
+
+        if (year != null) {
+            return topicRepository.listByYear(year.getValue(), pageable);
+        }
+
+        return topicRepository.findAll(pageable);
     }
 }
