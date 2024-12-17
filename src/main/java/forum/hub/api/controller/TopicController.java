@@ -22,7 +22,6 @@ public class TopicController {
     @Autowired
     private TopicService service;
 
-
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid TopicCreateDTO data, UriComponentsBuilder uriBuilder) {

@@ -2,8 +2,9 @@ package forum.hub.api.domain.course;
 
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -13,16 +14,22 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "courses_categories",
+            joinColumns = @JoinColumn(name = "course_id")
+    )
     @Enumerated(EnumType.STRING)
-    private List<CourseCategory> category;
+    @Column(name = "category")
+    private Set<CourseCategory> categories = new HashSet<>();
 
     public Course() {
     }
 
-    public Course(Long id, String name, List<CourseCategory> category) {
+    public Course(Long id, String name, Set<CourseCategory> categories) {
         this.id = id;
         this.name = name;
-        this.category = category;
+        this.categories = categories;
     }
 
     public Long getId() {
@@ -33,8 +40,8 @@ public class Course {
         return name;
     }
 
-    public List<CourseCategory> getCategory() {
-        return category;
+    public Set<CourseCategory> getCategories() {
+        return categories;
     }
 
     @Override
@@ -46,5 +53,14 @@ public class Course {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", categories=" + categories +
+                '}';
     }
 }
