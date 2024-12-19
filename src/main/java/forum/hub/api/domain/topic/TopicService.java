@@ -55,4 +55,9 @@ public class TopicService {
 
         return topicRepository.findAll(pageable);
     }
+
+    public Topic getTopicById(Long id) {
+        return topicRepository.findById(id)
+                .orElseThrow(() -> new ValidationException("Topic id does not exist"));
+    }
 }

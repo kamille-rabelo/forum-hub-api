@@ -2,6 +2,7 @@ package forum.hub.api.controller;
 
 
 import forum.hub.api.domain.topic.TopicCreateDTO;
+import forum.hub.api.domain.topic.TopicDetailDTO;
 import forum.hub.api.domain.topic.TopicViewDTO;
 import forum.hub.api.domain.topic.TopicService;
 import jakarta.transaction.Transactional;
@@ -42,5 +43,12 @@ public class TopicController {
                 .map(TopicViewDTO::new);
 
         return ResponseEntity.ok(topics);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detail(@PathVariable Long id) {
+        var topic = service.getTopicById(id);
+
+        return ResponseEntity.ok(new TopicDetailDTO(topic));
     }
 }
