@@ -1,10 +1,7 @@
 package forum.hub.api.controller;
 
 
-import forum.hub.api.domain.topic.TopicCreateDTO;
-import forum.hub.api.domain.topic.TopicDetailDTO;
-import forum.hub.api.domain.topic.TopicViewDTO;
-import forum.hub.api.domain.topic.TopicService;
+import forum.hub.api.domain.topic.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +47,13 @@ public class TopicController {
         var topic = service.getTopicById(id);
 
         return ResponseEntity.ok(new TopicDetailDTO(topic));
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity update(@PathVariable Long id, @RequestBody TopicUpdateDTO data) {
+        var topic = service.update(id, data);
+
+        return ResponseEntity.ok(new TopicViewDTO(topic));
     }
 }

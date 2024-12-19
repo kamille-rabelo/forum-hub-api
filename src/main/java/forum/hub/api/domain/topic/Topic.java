@@ -96,4 +96,10 @@ public class Topic {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public void update(TopicUpdateDTO data, Course course) {
+        if (data.title() != null && !data.title().isEmpty()) this.title = data.title();
+        if (data.message() != null && !data.message().isEmpty()) this.message = data.message();
+        this.course = course != null ? course : this.course;
+    }
 }

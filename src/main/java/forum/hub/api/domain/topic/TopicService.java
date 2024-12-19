@@ -23,9 +23,9 @@ public class TopicService {
     private CourseRepository courseRepository;
 
     public Topic create(TopicCreateDTO data) {
-        var existingTopic = topicRepository.findByTitle(data.title());
+        var doesDuplicateExist = topicRepository.findByTitleAndMessage(data.title(), data.message()).isPresent();
 
-        if (existingTopic.isPresent() && existingTopic.get().getMessage().equalsIgnoreCase(data.message())) {
+        if (doesDuplicateExist) {
             throw new ValidationException("Topic already exists");
         }
 
@@ -59,5 +59,26 @@ public class TopicService {
     public Topic getTopicById(Long id) {
         return topicRepository.findById(id)
                 .orElseThrow(() -> new ValidationException("Topic id does not exist"));
+    }
+
+    public Topic update(Long id, TopicUpdateDTO data) {
+        var topic = topicRepository.findById(id)
+                .orElseThrow(() -> new ValidationException("Topic id does not exist"));
+        var course = data.courseId() == null ? null : courseRepository.findById(data.courseId())
+                .orElseThrow(() -> new ValidationException("Course id does not exist"));
+
+        if (data.title() != null || data.message() != null) {
+            var doesDuplicateExist = topicRepository.findByTitleAndMessage(
+                    data.title() == null ? topic.getTitle() : data.title(),
+                    data.message() == null ? topic.getMessage() : data.message()
+            ).isPresent();
+
+            if (doesDuplicateExist) {
+                throw new ValidationException("Topic already exists");
+            }
+        }
+
+        topic.update(data, course);
+        return topicRepository.save(topic);
     }
 }
