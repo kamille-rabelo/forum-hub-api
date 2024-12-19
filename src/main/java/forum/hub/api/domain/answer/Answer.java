@@ -5,6 +5,7 @@ import forum.hub.api.domain.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @Entity
@@ -34,6 +35,14 @@ public class Answer {
         this.topic = topic;
         this.creationDate = creationDate;
         this.solution = solution;
+    }
+
+    public Answer(AnswerPostDTO data, User author, Topic topic) {
+        this.message = data.message();
+        this.author = author;
+        this.topic = topic;
+        this.creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        this.solution = false;
     }
 
     public Long getId() {
