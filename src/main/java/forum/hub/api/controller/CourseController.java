@@ -3,6 +3,7 @@ package forum.hub.api.controller;
 import forum.hub.api.domain.course.CourseCreateDTO;
 import forum.hub.api.domain.course.CourseDetailDTO;
 import forum.hub.api.domain.course.CourseService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/courses")
+@SecurityRequirement(name = "bearer-key")
 public class CourseController {
 
     @Autowired

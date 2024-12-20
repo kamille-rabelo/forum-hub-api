@@ -3,6 +3,7 @@ package forum.hub.api.controller;
 import forum.hub.api.domain.user.UserLoginDTO;
 import forum.hub.api.domain.user.UserRegisterDTO;
 import forum.hub.api.infra.security.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService service;
 
+    @SecurityRequirement(name = "bearer-key")
     @PostMapping("/register")
     @Transactional
     public ResponseEntity register(@RequestBody @Valid UserRegisterDTO data) {

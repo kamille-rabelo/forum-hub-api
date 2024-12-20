@@ -1,6 +1,8 @@
 package forum.hub.api.infra.exception;
 
 import forum.hub.api.domain.exception.ValidationException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,17 @@ public class ErrorHandler {
     public ResponseEntity handleAuthenticationError() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
     }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity handleExpiredJwtError(ExpiredJwtException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity handleMalformedJwtError(MalformedJwtException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity handleAccessDeniedError(AccessDeniedException e) {
