@@ -5,9 +5,11 @@ import forum.hub.api.domain.course.CourseRepository;
 import forum.hub.api.domain.exception.EntityNotFoundException;
 import forum.hub.api.domain.exception.ValidationException;
 import forum.hub.api.domain.user.UserRepository;
+import forum.hub.api.infra.security.SecurityContextUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
@@ -26,6 +28,9 @@ public class TopicService {
 
     @Autowired
     private AnswerRepository answerRepository;
+
+    @Autowired
+    private SecurityContextUserProvider userProvider;
 
     public Topic create(TopicCreateDTO data) {
         var doesDuplicateExist = topicRepository.findByTitleAndMessage(data.title(), data.message()).isPresent();
@@ -64,6 +69,11 @@ public class TopicService {
 
     public Topic update(Long id, TopicUpdateDTO data) {
         var topic = getTopicById(id);
+
+        if (!isAuthorizedToProceed(topic)) {
+            throw new AccessDeniedException("You are not the author of this topic");
+        }
+
         var course = data.courseId() == null ? null : courseRepository.findById(data.courseId())
                 .orElseThrow(() -> new EntityNotFoundException("Course id does not exist"));
 
@@ -83,11 +93,17 @@ public class TopicService {
     }
 
     public void delete(Long id) {
-        if (topicRepository.existsById(id)) {
-            topicRepository.deleteById(id);
-        } else {
-            throw new EntityNotFoundException("Topic id does not exist");
+        var topic = getTopicById(id);
+
+        if (!isAuthorizedToProceed(topic) && !userProvider.isAdmin()) {
+            throw new AccessDeniedException("You are not the author of this topic");
         }
+
+        topicRepository.deleteById(id);
+    }
+
+    private boolean isAuthorizedToProceed(Topic topic) {
+        return userProvider.getUser().equals(topic.getAuthor());
     }
 
     public void markSolved(Long topicId, Long answerId) {
