@@ -1,9 +1,9 @@
 package forum.hub.api.infra.exception;
 
+import forum.hub.api.domain.exception.EntityNotFoundException;
 import forum.hub.api.domain.exception.ValidationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity handle404Error() {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity handle404Error(EntityNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

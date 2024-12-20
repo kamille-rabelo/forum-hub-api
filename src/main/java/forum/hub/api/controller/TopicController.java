@@ -34,6 +34,14 @@ public class TopicController {
         return ResponseEntity.created(uri).body(new TopicViewDTO(topic));
     }
 
+    @PostMapping("/{topicId}/answers/{answerId}/mark-solved")
+    @Transactional
+    public ResponseEntity markSolved(@PathVariable Long topicId, @PathVariable Long answerId) {
+        service.markSolved(topicId, answerId);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity list(@PageableDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable,
                                @RequestParam(required = false) String course,

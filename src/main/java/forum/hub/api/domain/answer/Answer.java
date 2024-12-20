@@ -79,4 +79,8 @@ public class Answer {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
+    public void markAsSolution() {
+        this.solution = true;
+    }
 }

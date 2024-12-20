@@ -18,10 +18,7 @@ public class CourseService {
             throw new ValidationException("Course already exists");
         }
 
-        var course = new Course(null, data.name(), data.categories());
-
-        repository.save(course);
-        return course;
+        return repository.save(new Course(null, data.name(), data.categories()));
     }
 
     public Page<Course> getCourses(Pageable pageable) {

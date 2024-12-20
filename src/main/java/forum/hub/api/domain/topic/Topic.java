@@ -102,4 +102,8 @@ public class Topic {
         if (data.message() != null && !data.message().isEmpty()) this.message = data.message();
         this.course = course != null ? course : this.course;
     }
+
+    public void setTopicAsSolved() {
+        solved = true;
+    }
 }

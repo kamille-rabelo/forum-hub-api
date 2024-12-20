@@ -24,10 +24,7 @@ public class AnswerService {
         var topic = topicRepository.findById(data.topicId())
                 .orElseThrow(() -> new ValidationException("Topic id does not exist"));
 
-        var answer = new Answer(data, author, topic);
-
-        answerRepository.save(answer);
-        return answer;
+        return answerRepository.save(new Answer(data, author, topic));
     }
 
 }

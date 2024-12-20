@@ -1,6 +1,8 @@
 package forum.hub.api.domain.topic;
 
+import forum.hub.api.domain.answer.AnswerRepository;
 import forum.hub.api.domain.course.CourseRepository;
+import forum.hub.api.domain.exception.EntityNotFoundException;
 import forum.hub.api.domain.exception.ValidationException;
 import forum.hub.api.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class TopicService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
     public Topic create(TopicCreateDTO data) {
         var doesDuplicateExist = topicRepository.findByTitleAndMessage(data.title(), data.message()).isPresent();
         if (doesDuplicateExist) {
@@ -29,9 +34,9 @@ public class TopicService {
         }
 
         var author = userRepository.findById(data.authorId()).orElseThrow(
-                () -> new ValidationException("User id does not exist"));
+                () -> new EntityNotFoundException("User id does not exist"));
         var course = courseRepository.findById(data.courseId()).orElseThrow(
-                () -> new ValidationException("Course id does not exist"));
+                () -> new EntityNotFoundException("Course id does not exist"));
 
         return topicRepository.save(new Topic(data, author, course));
     }
@@ -53,15 +58,14 @@ public class TopicService {
     }
 
     public Topic getTopicById(Long id) {
-        return topicRepository.findById(id)
-                .orElseThrow(() -> new ValidationException("Topic id does not exist"));
+        return topicRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Topic id does not exist"));
     }
 
     public Topic update(Long id, TopicUpdateDTO data) {
-        var topic = topicRepository.findById(id)
-                .orElseThrow(() -> new ValidationException("Topic id does not exist"));
+        var topic = getTopicById(id);
         var course = data.courseId() == null ? null : courseRepository.findById(data.courseId())
-                .orElseThrow(() -> new ValidationException("Course id does not exist"));
+                .orElseThrow(() -> new EntityNotFoundException("Course id does not exist"));
 
         if (data.title() != null || data.message() != null) {
             var doesDuplicateExist = topicRepository.findByTitleAndMessage(
@@ -82,7 +86,21 @@ public class TopicService {
         if (topicRepository.existsById(id)) {
             topicRepository.deleteById(id);
         } else {
-            throw new ValidationException("Topic id does not exist");
+            throw new EntityNotFoundException("Topic id does not exist");
         }
+    }
+
+    public void markSolved(Long topicId, Long answerId) {
+        var topic = getTopicById(topicId);
+
+        var answer = answerRepository.findByIdAndTopicId(answerId, topicId).orElseThrow(
+                () -> new ValidationException("Answer does not belong to topic or does not exist"));
+
+        if (topic.getSolved()) {
+            throw new ValidationException("Topic is already solved");
+        }
+
+        topic.setTopicAsSolved();
+        answer.markAsSolution();
     }
 }
