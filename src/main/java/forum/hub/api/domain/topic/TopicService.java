@@ -24,20 +24,16 @@ public class TopicService {
 
     public Topic create(TopicCreateDTO data) {
         var doesDuplicateExist = topicRepository.findByTitleAndMessage(data.title(), data.message()).isPresent();
-
         if (doesDuplicateExist) {
             throw new ValidationException("Topic already exists");
         }
 
-        var author = userRepository.findById(data.authorId())
-                .orElseThrow(() -> new ValidationException("User id does not exist"));
-        var course = courseRepository.findById(data.courseId())
-                .orElseThrow(() -> new ValidationException("Course id does not exist"));
+        var author = userRepository.findById(data.authorId()).orElseThrow(
+                () -> new ValidationException("User id does not exist"));
+        var course = courseRepository.findById(data.courseId()).orElseThrow(
+                () -> new ValidationException("Course id does not exist"));
 
-        var topic = new Topic(data, author, course);
-        topicRepository.save(topic);
-
-       return topic;
+        return topicRepository.save(new Topic(data, author, course));
     }
 
     public Page<Topic> getTopics(String course, Year year, Pageable pageable) {
@@ -80,5 +76,13 @@ public class TopicService {
 
         topic.update(data, course);
         return topicRepository.save(topic);
+    }
+
+    public void delete(Long id) {
+        if (topicRepository.existsById(id)) {
+            topicRepository.deleteById(id);
+        } else {
+            throw new ValidationException("Topic id does not exist");
+        }
     }
 }

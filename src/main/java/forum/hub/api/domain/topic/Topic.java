@@ -28,7 +28,7 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-    @OneToMany(mappedBy = "topic", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "topic", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Answer> answers = new ArrayList<>();
 
     public Topic() {
