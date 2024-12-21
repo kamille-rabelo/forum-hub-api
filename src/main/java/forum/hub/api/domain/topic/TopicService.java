@@ -5,7 +5,7 @@ import forum.hub.api.domain.course.CourseRepository;
 import forum.hub.api.domain.exception.EntityNotFoundException;
 import forum.hub.api.domain.exception.ValidationException;
 import forum.hub.api.domain.user.UserRepository;
-import forum.hub.api.infra.security.SecurityContextUserProvider;
+import forum.hub.api.infra.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class TopicService {
     private AnswerRepository answerRepository;
 
     @Autowired
-    private SecurityContextUserProvider userProvider;
+    private AuthenticatedUserProvider userProvider;
 
     public Topic create(TopicCreateDTO data) {
         var doesDuplicateExist = topicRepository.findByTitleAndMessage(data.title(), data.message()).isPresent();
