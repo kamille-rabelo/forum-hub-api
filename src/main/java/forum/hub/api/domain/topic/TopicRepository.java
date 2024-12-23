@@ -10,8 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
-    @Query("SELECT t FROM Topic t WHERE LOWER(t.course.name) LIKE LOWER(:course) AND YEAR(t.creationDate) = :year")
-    Page<Topic> listByCourseNameAndYear(String course, int year, Pageable pageable);
+    @Query("""
+    SELECT t FROM Topic t
+    WHERE (:course IS NULL OR LOWER(t.course.name) LIKE LOWER(CONCAT('%', :course, '%')))
+      AND (:year IS NULL OR YEAR(t.creationDate) = :year)
+    """)
+    Page<Topic> listByCourseNameAndYear(String course, Integer year, Pageable pageable);
 
     @Query("SELECT t FROM Topic t WHERE LOWER(t.course.name) LIKE LOWER(:course)")
     Page<Topic> listByCourseName(String course, Pageable pageable);

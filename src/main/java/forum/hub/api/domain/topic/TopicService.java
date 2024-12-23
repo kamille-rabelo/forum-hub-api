@@ -32,7 +32,7 @@ public class TopicService {
     @Autowired
     private AuthenticatedUserProvider userProvider;
 
-    public Topic create(TopicCreateDTO data) {
+    public TopicViewDTO create(TopicCreateDTO data) {
         var doesDuplicateExist = topicRepository.findByTitleAndMessage(data.title(), data.message()).isPresent();
         if (doesDuplicateExist) {
             throw new ValidationException("Topic already exists");
@@ -43,23 +43,14 @@ public class TopicService {
         var course = courseRepository.findById(data.courseId()).orElseThrow(
                 () -> new EntityNotFoundException("Course id does not exist"));
 
-        return topicRepository.save(new Topic(data, author, course));
+        var topic = new Topic(data, author, course);
+        topicRepository.save(topic);
+        return new TopicViewDTO(topic);
     }
 
-    public Page<Topic> getTopics(String course, Year year, Pageable pageable) {
-        if (course != null && year != null) {
-            return topicRepository.listByCourseNameAndYear("%" + course + "%", year.getValue(), pageable);
-        }
-
-        if (course != null) {
-            return topicRepository.listByCourseName("%" + course + "%", pageable);
-        }
-
-        if (year != null) {
-            return topicRepository.listByYear(year.getValue(), pageable);
-        }
-
-        return topicRepository.findAll(pageable);
+    public Page<TopicViewDTO> getTopics(String course, Year year, Pageable pageable) {
+        return topicRepository.listByCourseNameAndYear(course, year.getValue(), pageable)
+                .map(TopicViewDTO::new);
     }
 
     public Topic getTopicById(Long id) {
