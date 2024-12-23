@@ -29,9 +29,9 @@ public class TopicController {
     public ResponseEntity create(@RequestBody @Valid TopicCreateDTO data, UriComponentsBuilder uriBuilder) {
         var topic = service.create(data);
 
-        var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.getId()).toUri();
+        var uri = uriBuilder.path("/topics/{id}").buildAndExpand(topic.id()).toUri();
 
-        return ResponseEntity.created(uri).body(new TopicViewDTO(topic));
+        return ResponseEntity.created(uri).body(topic);
     }
 
     @PostMapping("/{topicId}/answers/{answerId}/mark-solved")
@@ -46,10 +46,8 @@ public class TopicController {
     public ResponseEntity list(@PageableDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable,
                                @RequestParam(required = false) String course,
                                @RequestParam(required = false) Year year) {
-        var topics = service.getTopics(course, year, pageable)
-                .map(TopicViewDTO::new);
 
-        return ResponseEntity.ok(topics);
+        return ResponseEntity.ok(service.getTopics(course, year, pageable));
     }
 
     @GetMapping("/{id}")

@@ -1,7 +1,6 @@
 package forum.hub.api.controller;
 
 import forum.hub.api.domain.course.CourseCreateDTO;
-import forum.hub.api.domain.course.CourseDetailDTO;
 import forum.hub.api.domain.course.CourseService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
@@ -23,16 +22,12 @@ public class CourseController {
     @PostMapping
     @Transactional
     public ResponseEntity create(@RequestBody @Valid CourseCreateDTO data) {
-        var course = service.create(data);
-
-        return ResponseEntity.created(null).body(new CourseDetailDTO(course));
+        return ResponseEntity.created(null)
+                .body(service.create(data));
     }
 
     @GetMapping
     public ResponseEntity list(@PageableDefault(sort = "name") Pageable pageable) {
-        var courses = service.getCourses(pageable)
-                .map(CourseDetailDTO::new);
-
-        return ResponseEntity.ok(courses);
+        return ResponseEntity.ok(service.getCourses(pageable));
     }
 }

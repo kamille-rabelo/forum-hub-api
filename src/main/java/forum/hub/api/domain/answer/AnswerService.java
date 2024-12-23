@@ -18,13 +18,15 @@ public class AnswerService {
     @Autowired
     private AnswerRepository answerRepository;
 
-    public Answer post(AnswerPostDTO data) {
+    public AnswerDetailDTO post(AnswerPostDTO data) {
         var author = userRepository.findById(data.authorId())
                 .orElseThrow(() -> new ValidationException("User id does not exist"));
         var topic = topicRepository.findById(data.topicId())
                 .orElseThrow(() -> new ValidationException("Topic id does not exist"));
 
-        return answerRepository.save(new Answer(data, author, topic));
+        var answer = new Answer(data, author, topic);
+        answerRepository.save(answer);
+        return new AnswerDetailDTO(answer);
     }
 
 }

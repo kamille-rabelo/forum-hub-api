@@ -2,7 +2,6 @@ package forum.hub.api.controller;
 
 import forum.hub.api.domain.answer.AnswerPostDTO;
 import forum.hub.api.domain.answer.AnswerService;
-import forum.hub.api.domain.answer.AnswerDetailDTO;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +21,7 @@ public class AnswerController {
 
     @PostMapping
     public ResponseEntity post(@RequestBody @Valid AnswerPostDTO data) {
-        var post = service.post(data);
-
-        return ResponseEntity.ok(new AnswerDetailDTO(post));
+        return ResponseEntity.ok(service.post(data));
     }
 
 }
