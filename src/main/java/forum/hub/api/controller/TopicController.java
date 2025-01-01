@@ -37,8 +37,10 @@ public class TopicController {
     @PostMapping("/{topicId}/answers/{answerId}/mark-solved")
     @Transactional
     public ResponseEntity markSolved(@PathVariable Long topicId, @PathVariable Long answerId) {
+        System.out.println("service called");
         service.markSolved(topicId, answerId);
 
+        System.out.println("service called 2");
         return ResponseEntity.noContent().build();
     }
 
@@ -52,23 +54,19 @@ public class TopicController {
 
     @GetMapping("/{id}")
     public ResponseEntity detail(@PathVariable Long id) {
-        var topic = service.getTopicById(id);
-
-        return ResponseEntity.ok(new TopicDetailDTO(topic));
+        return ResponseEntity.ok(service.getTopicDetailById(id));
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity update(@PathVariable Long id, @RequestBody TopicUpdateDTO data) {
-        var topic = service.update(id, data);
-
-        return ResponseEntity.ok(new TopicViewDTO(topic));
+        return ResponseEntity.ok(service.update(id, data));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity delete(@PathVariable Long id) {
-        service.delete(id);
+        service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

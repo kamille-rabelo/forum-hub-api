@@ -58,7 +58,7 @@ public class TopicService {
                 () -> new EntityNotFoundException("Topic id does not exist"));
     }
 
-    public Topic update(Long id, TopicUpdateDTO data) {
+    public TopicViewDTO update(Long id, TopicUpdateDTO data) {
         var topic = getTopicById(id);
 
         if (!isAuthorizedToProceed(topic)) {
@@ -80,10 +80,11 @@ public class TopicService {
         }
 
         topic.update(data, course);
-        return topicRepository.save(topic);
+        topicRepository.save(topic);
+        return new TopicViewDTO(topic);
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         var topic = getTopicById(id);
 
         if (!isAuthorizedToProceed(topic) && !userProvider.isAdmin()) {
@@ -109,5 +110,9 @@ public class TopicService {
 
         topic.setTopicAsSolved();
         answer.markAsSolution();
+    }
+
+    public TopicDetailDTO getTopicDetailById(Long id) {
+        return new TopicDetailDTO(getTopicById(id));
     }
 }
