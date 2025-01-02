@@ -49,7 +49,7 @@ public class TopicService {
     }
 
     public Page<TopicViewDTO> getTopics(String course, Year year, Pageable pageable) {
-        return topicRepository.listByCourseNameAndYear(course, year.getValue(), pageable)
+        return topicRepository.listByCourseNameAndYear(course, year == null ? null : year.getValue(), pageable)
                 .map(TopicViewDTO::new);
     }
 
