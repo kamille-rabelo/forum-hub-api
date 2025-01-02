@@ -37,10 +37,7 @@ public class TopicController {
     @PostMapping("/{topicId}/answers/{answerId}/mark-solved")
     @Transactional
     public ResponseEntity markSolved(@PathVariable Long topicId, @PathVariable Long answerId) {
-        System.out.println("service called");
         service.markSolved(topicId, answerId);
-
-        System.out.println("service called 2");
         return ResponseEntity.noContent().build();
     }
 
